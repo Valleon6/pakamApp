@@ -11,9 +11,7 @@ public class Message {
     public static final String USER_NOT_FOUND = "This user does not exist";
     public static final String ERROR_ACCOUNT_CREATION = "Cannot create account, please try again later";
     public static final String EMAIL_EXIST = "Email already in use";
-    public static final String USERNAME_EXIST = "username already in use";
     public static final String PASSWORD_ERROR = "password must contain at least one uppercase letter, a special character and not less than 9 characters";
-    public static final String PHONE_EXIST = "Phone number already exists";
     public static final String LOGIN_SUCCESS = "Log in successful";
     public static final String LOGIN_ERROR = "Incorrect email or password";
     public static final String SUCCESS_PASSWORD_RESET_EMAIL = "The password reset mail has been sent to your email";

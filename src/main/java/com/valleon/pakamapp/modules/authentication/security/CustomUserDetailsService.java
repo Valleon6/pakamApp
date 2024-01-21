@@ -12,7 +12,6 @@ import com.valleon.pakamapp.modules.customer.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,19 +34,19 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private EmailTokenRepository emailTokenRepository;
 
-    public CustomUserDetailsService(CustomerRepository userRepository){
+    public CustomUserDetailsService(CustomerRepository userRepository) {
         this.customerRepository = userRepository;
     }
 
     @Override
     public CustomUserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        Customer user =  customerRepository.findByEmail(usernameOrEmail)
-                .orElseThrow(()->new UsernameNotFoundException(Message.CUSTOMER_NOT_FOUND));
+        Customer user = customerRepository.findByEmail(usernameOrEmail)
+                .orElseThrow(() -> new UsernameNotFoundException(Message.CUSTOMER_NOT_FOUND));
 
-       Set<GrantedAuthority> authorities = user
-               .getRole()
-               .stream()
-               .map((role) -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
+        Set<GrantedAuthority> authorities = user
+                .getRole()
+                .stream()
+                .map((role) -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
 
         CustomUserDetails customerUserDetail = new CustomUserDetails();
         customerUserDetail.setUser(user);
@@ -81,7 +80,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public String validatePasswordResetToken(String token) {
         LocalDateTime time = LocalDateTime.now();
         final PasswordResetToken passToken = passwordTokenRepository.findByToken(token)
-                .orElseThrow(()-> new ApiRequestException(Message.INVALID_TOKEN));
+                .orElseThrow(() -> new ApiRequestException(Message.INVALID_TOKEN));
 
         return !isPasswordTokenFound(passToken) ? "invalidToken"
                 : isPasswordTokenExpired(passToken) ? "expired"
@@ -91,7 +90,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public String validateEmailValidationToken(String token) {
         LocalDateTime time = LocalDateTime.now();
         final EmailValidationToken emailToken = emailTokenRepository.findByToken(token)
-                .orElseThrow(()-> new ApiRequestException(Message.INVALID_TOKEN));
+                .orElseThrow(() -> new ApiRequestException(Message.INVALID_TOKEN));
 
         return !isEmailTokenFound(emailToken) ? "invalidToken"
                 : isEmailTokenExpired(emailToken) ? "expired"

@@ -6,7 +6,7 @@ import com.valleon.pakamapp.exception.Message;
 import com.valleon.pakamapp.modules.assessment.repository.AssessmentRepository;
 import com.valleon.pakamapp.modules.customer.entity.Customer;
 import com.valleon.pakamapp.modules.customer.repository.CustomerRepository;
-import com.valleon.pakamapp.modules.payload.CustomerDto;
+import com.valleon.pakamapp.modules.payload.CustomerDTO;
 import com.valleon.pakamapp.modules.payload.ResponseMessage;
 import com.valleon.pakamapp.utils.CheckValidation;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +22,14 @@ public class CustomerService {
 
     private final AssessmentRepository assessmentRepository;
 
-    public ResponseMessage getCustomer (String customerCode){
-        LocalDateTime time  =  LocalDateTime.now();
+    public ResponseMessage getCustomer(String customerCode) {
+        LocalDateTime time = LocalDateTime.now();
 
         Customer customer = customerRepository.findByCustomerCode(customerCode)
-                .orElseThrow(()-> new ApiRequestException(Message.CUSTOMER_NOT_FOUND));
-        CustomerDto customerDto = new CustomerDto();
-        customerDto.setFirst_name(customer.getFirstName());
-        customerDto.setLast_name(customer.getLastName());
+                .orElseThrow(() -> new ApiRequestException(Message.CUSTOMER_NOT_FOUND));
+        CustomerDTO customerDto = new CustomerDTO();
+        customerDto.setFirstName(customer.getFirstName());
+        customerDto.setLastName(customer.getLastName());
         customerDto.setPhone(customer.getPhone());
         customerDto.setEmail(customer.getEmail());
 //        customerDto.setUsername(customer.getUsername());
@@ -37,7 +37,7 @@ public class CustomerService {
     }
 
 
-    public ResponseMessage updateCustomer(CustomerDto newCustomer, String CustomerCode) {
+    public ResponseMessage updateCustomer(CustomerDTO newCustomer, String CustomerCode) {
         LocalDateTime time = LocalDateTime.now();
         try {
             Customer customerToUpdate = customerRepository.findByCustomerCode(CustomerCode)

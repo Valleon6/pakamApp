@@ -11,7 +11,7 @@ public class CustomUserDetails implements UserDetails {
 
     private static final long serialVersionUID = 1L;
     private Customer customer;
-    Set<GrantedAuthority> authorities=null;
+    Set<GrantedAuthority> authorities = null;
 
     public Customer getUser() {
         return customer;
@@ -26,9 +26,8 @@ public class CustomUserDetails implements UserDetails {
         return authorities;
     }
 
-    public void setAuthorities(Set<GrantedAuthority> authorities)
-    {
-        this.authorities=authorities;
+    public void setAuthorities(Set<GrantedAuthority> authorities) {
+        this.authorities = authorities;
     }
 
 

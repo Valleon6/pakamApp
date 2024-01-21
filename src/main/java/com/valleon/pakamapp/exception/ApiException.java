@@ -11,7 +11,7 @@ public class ApiException {
     private final HttpStatus httpStatus;
     private final ZonedDateTime time;
 
-    public ApiException(String message, HttpStatus httpStatus, ZonedDateTime dateTime){
+    public ApiException(String message, HttpStatus httpStatus, ZonedDateTime dateTime) {
         this.message = message;
         this.httpStatus = httpStatus;
         this.time = dateTime;

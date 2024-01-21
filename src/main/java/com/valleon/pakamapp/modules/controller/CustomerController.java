@@ -1,20 +1,25 @@
 package com.valleon.pakamapp.modules.controller;
 
-import com.valleon.pakamapp.modules.assessment.service.AssessmentService;
-import com.valleon.pakamapp.modules.customer.entity.Customer;
 import com.valleon.pakamapp.modules.customer.service.CustomerService;
+import com.valleon.pakamapp.modules.payload.CustomerDTO;
+import com.valleon.pakamapp.modules.payload.ResponseMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/customer")
 public class CustomerController {
-    private CustomerService customerService;
+    private final CustomerService customerService;
 
-    private AssessmentService assessmentService;
+    @GetMapping("/")
+    public ResponseMessage getCustomer(@RequestParam("cco") String customerCode) {
+        return customerService.getCustomer(customerCode);
+    }
 
-
+    @PutMapping("/update")
+    public ResponseMessage updateCustomer(@RequestBody CustomerDTO customerDTO, @RequestParam("cco") String customerCode) {
+        return customerService.updateCustomer(customerDTO, customerCode);
+    }
 
 }

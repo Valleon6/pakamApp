@@ -10,11 +10,16 @@ import com.valleon.pakamapp.modules.customer.repository.CustomerRepository;
 import com.valleon.pakamapp.modules.payload.AssessmentDTO;
 import com.valleon.pakamapp.modules.payload.ResponseMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +40,8 @@ public class AssessmentService {
             assessment.setDescription(assessmentDTO.getDescription());
             assessment.setFullName(assessmentDTO.getFullName());
             assessment.setQuantity(assessmentDTO.getQuantity());
+            assessment.setDateAdded(time);
+            assessment.setDateUpdated(time);
             assessmentRepository.save(assessment);
             return new ResponseMessage<>(time, Codes.SUCCESS, Message.SUCCESS_CREATE_ASSESSMENT, assessment);
         } catch (Exception e) {
@@ -50,6 +57,7 @@ public class AssessmentService {
             assessmentToUpdate.setFullName(assessmentDto.getFullName());
             assessmentToUpdate.setDescription(assessmentDto.getDescription());
             assessmentToUpdate.setQuantity(assessmentDto.getQuantity());
+            assessmentToUpdate.setDateUpdated(time);
             assessmentRepository.save(assessmentToUpdate);
             return new ResponseMessage<>(time, Codes.SUCCESS, Message.SUCCESS_UPDATE, assessmentToUpdate);
         } catch (Exception e) {
@@ -57,20 +65,48 @@ public class AssessmentService {
         }
     }
 
-    public ResponseMessage deleteAssessment(String assessmentCode){
+    public ResponseMessage deleteAssessment(String assessmentCode) {
         LocalDateTime time = LocalDateTime.now();
         Assessment assessment = assessmentRepository.findByAssessmentCode(assessmentCode)
-                .orElseThrow(()-> new ApiRequestException(Message.ERROR_GET));
+                .orElseThrow(() -> new ApiRequestException(Message.ERROR_GET));
+        assessment.setDateUpdated(time);
         assessment.setExist(false);
         assessmentRepository.save(assessment);
         return new ResponseMessage(time, Codes.SUCCESS, Message.SUCCESS_DELETE_ASSESSMENT, null);
     }
 
-    public ResponseMessage getUserAssessments(String customerCode) {
+//    public ResponseMessage getCustomerAssessments(String customerCode) {
+//        LocalDateTime time = LocalDateTime.now();
+//        List<Assessment> assessments = assessmentRepository.findAllByCustomer_CustomerCodeAndExist(customerCode, true)
+//                .orElseThrow(() -> new ApiRequestException(Message.ERROR_GET));
+//        return new ResponseMessage(time, Codes.SUCCESS, Message.SUCCESS_GET, assessments);
+//    }
+
+    public ResponseMessage getCustomerAssessmentsOrderByDateDesc(String customerCode, int pageNo, int pageSize) throws Exception {
         LocalDateTime time = LocalDateTime.now();
-        List<Assessment> assessments = assessmentRepository.findAllByCustomer_CustomerCodeAndIsExist(customerCode, true)
-                .orElseThrow(() -> new ApiRequestException(Message.ERROR_GET));
-        return new ResponseMessage(time, Codes.SUCCESS, Message.SUCCESS_GET, assessments);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        try {
+            Page<Assessment> assessmentPage =
+                    assessmentRepository.findAllByCustomer_CustomerCodeOrderByDateAddedDesc(customerCode, pageable);
+            List<Assessment> assessments = assessmentPage.getContent().stream()
+                    .filter(assessment -> assessment.isExist())
+                    .collect(Collectors.toCollection(LinkedList::new));
+            return new ResponseMessage(
+                    time,
+                    Codes.SUCCESS,
+                    Message.SUCCESS_GET,
+                    assessments,
+                    assessmentPage.getNumber() + 1,
+                    assessmentPage.getSize(),
+                    assessmentPage.hasPrevious() ? assessmentPage.getNumber() : null,
+                    assessmentPage.hasNext() ? assessmentPage.getNumber() + 2 : null,
+                    assessments.size(), assessmentPage.getTotalPages(),
+                    assessmentPage.hasPrevious(),
+                    assessmentPage.hasNext(),
+                    assessmentPage.isLast());
+        } catch (Exception e) {
+            throw new Exception(Message.ERROR_GET + e.getMessage());
+        }
     }
 
     public ResponseMessage getSingleAssessment(String assessmentCode) {

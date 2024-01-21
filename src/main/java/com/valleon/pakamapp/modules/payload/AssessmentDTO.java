@@ -9,13 +9,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class AssessmentDTO {
-        @NotBlank(message = "Full name cannot be blank")
-        private String fullName;
+    @NotBlank(message = "Full name cannot be blank")
+    private String fullName;
 
-        @NotBlank(message = "Please provide a description")
-        private String description;
+    @NotBlank(message = "Please provide a description")
+    private String description;
 
-        @NotBlank(message = "Please enter a quantity")
-        private int quantity;
+    @NotBlank(message = "Please enter a quantity")
+    private int quantity;
 
 }

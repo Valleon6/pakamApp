@@ -28,7 +28,7 @@ Role {
     private String name;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "role", cascade = { CascadeType.ALL })
+    @ManyToMany(mappedBy = "role", cascade = {CascadeType.ALL})
     private Set<Customer> customers = new HashSet<Customer>();
 
 

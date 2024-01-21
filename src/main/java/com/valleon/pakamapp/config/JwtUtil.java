@@ -33,6 +33,7 @@ public class JwtUtil {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
+
     private static Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
@@ -47,7 +48,6 @@ public class JwtUtil {
         claims.put("CustomerRole", Arrays.toString(userDetails.getUser()
                 .getRole()
                 .stream()
-//                .map((role) -> role.getName())).collect(Collectors.toSet()););
                 .map(Role::getName).toList().toArray()));
         claims.put("CustomerEmail", userDetails.getUsername());
         return createToken(claims, userDetails);

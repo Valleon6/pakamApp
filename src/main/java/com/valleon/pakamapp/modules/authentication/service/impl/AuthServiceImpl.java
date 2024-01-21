@@ -25,7 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import org.springframework.web.client.RestTemplate;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -98,7 +97,6 @@ class AuthServiceImpl implements AuthService {
             customer.setEmail(registerDTO.getEmail());
             customer.setPhone(registerDTO.getPhoneNumber());
 
-//            customer.setIsDefaultPassword(registerDTO.getIsDefaultPassword());
             int strength = 10;
             BCryptPasswordEncoder bCryptPasswordEncoder =
                     new BCryptPasswordEncoder(strength, new SecureRandom());

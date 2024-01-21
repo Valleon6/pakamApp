@@ -7,18 +7,17 @@ import lombok.*;
 
 @Getter
 @Setter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerDto extends Customer {
+public class CustomerDTO extends Customer {
     @Pattern(regexp = AppConstants.REGEX_EMAIL, message = "invalid email")
     private String email;
 
-    private String customer_code;
+    private String customerCode;
 
-    private String first_name;
+    private String firstName;
 
-    private String last_name;
+    private String lastName;
 
     @Pattern(regexp = AppConstants.REGEX_PHONE_NUMBER, message = "invalid phone number")
     private String phone;

@@ -28,16 +28,14 @@ public class PasswordResetToken {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="customer_id")
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     private Date expiryDate;
 
     public PasswordResetToken(String token, Customer customer) {
     }
-
-    //Set to not null later
-    @Column(name = "dateCreated")
+    @Column(name = "date_created")
     private LocalDateTime dateCreated = LocalDateTime.now();
 }
 

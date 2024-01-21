@@ -12,12 +12,14 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
 
     Optional<Customer> findByCustomerCode(String customerCode);
 
-    Optional<Customer> findByEmail (String email);
-//    Boolean existsByUsername (String username);
-    Boolean existsByEmail (String email);
-//    Boolean existsByPhone(String phone);
+    Optional<Customer> findByEmail(String email);
+
+    //    Boolean existsByUsername (String username);
+    Boolean existsByEmail(String email);
+
     @Query("SELECT t.customer FROM PasswordResetToken t WHERE t.token = ?1")
     Optional<Customer> getUserByPasswordResetToken(String Token);
+
     @Query("SELECT t.customer FROM EmailValidationToken t WHERE t.token = ?1")
     Optional<Customer> getUserByEmailValidationToken(String Token);
 }

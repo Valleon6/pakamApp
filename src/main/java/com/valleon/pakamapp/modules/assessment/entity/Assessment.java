@@ -6,7 +6,10 @@ import com.valleon.pakamapp.modules.customer.entity.Customer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "assessment")
@@ -40,11 +43,19 @@ public class Assessment {
     @Column(name = "quantity")
     private int quantity;
 
-    @Column(name = "is_exist")
-    private boolean isExist;
+    @Column(name = "exist")
+    private boolean exist;
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @Column(name = "date_added")
+    @CreationTimestamp
+    private LocalDateTime dateAdded;
+
+    @Column(name = "date_updated")
+    @CreationTimestamp
+    private LocalDateTime dateUpdated;
 }
