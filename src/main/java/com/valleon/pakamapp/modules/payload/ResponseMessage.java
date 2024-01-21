@@ -1,5 +1,6 @@
 package com.valleon.pakamapp.modules.payload;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,8 +8,8 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-
-public class ResponseMessage<T> {
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+public class ResponseMessage<T>   {
     private LocalDateTime timeStamp = LocalDateTime.now();
     private int statusCode;
     private String details;

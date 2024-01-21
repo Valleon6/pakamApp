@@ -27,8 +27,6 @@ public class RegisterDTO {
 
     private String role;
 
-//    private Boolean isDefaultPassword;
-
     @NonNull
     @NotEmpty
     private String phoneNumber;

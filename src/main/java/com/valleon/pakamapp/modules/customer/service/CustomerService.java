@@ -24,16 +24,9 @@ public class CustomerService {
 
     public ResponseMessage getCustomer(String customerCode) {
         LocalDateTime time = LocalDateTime.now();
-
         Customer customer = customerRepository.findByCustomerCode(customerCode)
                 .orElseThrow(() -> new ApiRequestException(Message.CUSTOMER_NOT_FOUND));
-        CustomerDTO customerDto = new CustomerDTO();
-        customerDto.setFirstName(customer.getFirstName());
-        customerDto.setLastName(customer.getLastName());
-        customerDto.setPhone(customer.getPhone());
-        customerDto.setEmail(customer.getEmail());
-//        customerDto.setUsername(customer.getUsername());
-        return new ResponseMessage<>(time, Codes.SUCCESS, Message.SUCCESS_GET, customer);
+  return new ResponseMessage<>(time, Codes.SUCCESS, Message.SUCCESS_GET, customer);
     }
 
 

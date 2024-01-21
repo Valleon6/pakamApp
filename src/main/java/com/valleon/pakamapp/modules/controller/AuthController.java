@@ -8,6 +8,7 @@ import com.valleon.pakamapp.modules.payload.ResponseMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Locale;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
+@AllArgsConstructor
 public class AuthController {
 
     private final AuthService authService;

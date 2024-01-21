@@ -12,6 +12,7 @@ import com.valleon.pakamapp.modules.customer.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +26,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,13 +38,14 @@ import org.springframework.web.client.RestTemplate;
 import java.io.OutputStream;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JWTAuthFilter jwtAuthFilter;
@@ -55,24 +58,32 @@ public class SecurityConfig {
                 .registerModule(new JavaTimeModule());
     }
 
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/h2-console/**",
+            "/v2/api-docs",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/webjars/**",
+            "/api/v1/**",
+//            "**/auth/**",
+//            "**/assessment/**",
+//            "**/customer/**",
+            "/actuator/**",
+    };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests()
-                .requestMatchers(
-                        "/**/auth/**",
-                        "/**/assessment/**",
-                        "/swagger-resources/**",
-                        "/swagger-ui/**",
-                        "/v3/api-docs",
-                        "/webjars/**",
-                        "/actuator/**"
+                .requestMatchers( AUTH_WHITELIST
                 )
                 .permitAll()
                 .anyRequest()
-                .authenticated()
+                .permitAll()
+//                .authenticated()
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, authException) -> {
@@ -133,14 +144,14 @@ public class SecurityConfig {
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(time, Codes.USER_NOT_FOUND, Message.USER_NOT_FOUND));
 
-                Set<GrantedAuthority> authorities = user
-                        .getRole()
-                        .stream()
-                        .map((role) -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
+//                Set<GrantedAuthority> authorities = user
+//                        .getRole()
+//                        .stream()
+//                        .map((role) -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
 
-                return new org.springframework.security.core.userdetails.User(user.getEmail(),
+                return new User(user.getEmail(),
                         user.getPassword(),
-                        authorities);
+                        new ArrayList<>());
             }
         };
     }

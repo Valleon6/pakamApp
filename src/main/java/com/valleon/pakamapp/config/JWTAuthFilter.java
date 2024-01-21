@@ -26,7 +26,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class JWTAuthFilter extends OncePerRequestFilter {
 
-//    private final CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
     private final CustomUserDetailsService customUserDetailsService;
 
 

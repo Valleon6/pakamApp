@@ -1,5 +1,6 @@
 package com.valleon.pakamapp.modules.authentication.service.impl;
 
+
 import com.valleon.pakamapp.config.JwtUtil;
 import com.valleon.pakamapp.exception.ApiRequestException;
 import com.valleon.pakamapp.exception.Codes;
@@ -131,7 +132,7 @@ class AuthServiceImpl implements AuthService {
 
             return new ResponseMessage(time, Codes.SUCCESS, Message.SUCCESS_ACCOUNT_CREATION, customer);
         } catch (Exception e) {
-            return new ResponseMessage(time, Codes.SERVER_ERROR, Message.ERROR_ACCOUNT_CREATION, e.getMessage());
+            return   new ResponseMessage(time, Codes.SERVER_ERROR, Message.ERROR_ACCOUNT_CREATION, e.getMessage());
         }
     }
 

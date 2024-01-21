@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerController {
     private final CustomerService customerService;
 
-    @GetMapping("/")
+    @GetMapping("/get")
     public ResponseMessage getCustomer(@RequestParam("cco") String customerCode) {
         return customerService.getCustomer(customerCode);
     }
