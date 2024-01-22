@@ -16,6 +16,7 @@ import java.util.List;
 @Configuration
 public class SwaggerConfig {
     public static final String AUTHORIZATION_HEADER = "Authorization";
+
     private ApiInfo apiInfo() {
         return new ApiInfo("Pakam website APIs",
                 "APIs for Pakam website.",

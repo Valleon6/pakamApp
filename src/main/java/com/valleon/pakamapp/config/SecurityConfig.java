@@ -20,12 +20,9 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,8 +38,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @EnableWebSecurity
 @Configuration
@@ -72,13 +67,14 @@ public class SecurityConfig {
 //            "**/customer/**",
             "/actuator/**",
     };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests()
-                .requestMatchers( AUTH_WHITELIST
+                .requestMatchers(AUTH_WHITELIST
                 )
                 .permitAll()
                 .anyRequest()
@@ -143,12 +139,10 @@ public class SecurityConfig {
                 Customer user = customerRepository.findByEmail(usernameOrEmail)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(time, Codes.USER_NOT_FOUND, Message.USER_NOT_FOUND));
-
 //                Set<GrantedAuthority> authorities = user
 //                        .getRole()
 //                        .stream()
 //                        .map((role) -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
-
                 return new User(user.getEmail(),
                         user.getPassword(),
                         new ArrayList<>());

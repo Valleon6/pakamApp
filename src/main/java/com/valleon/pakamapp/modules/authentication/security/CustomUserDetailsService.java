@@ -125,7 +125,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         } else {
             return false;
         }
-    }public boolean isChangeUserPassword(Customer customer, String oldPassword, String newPassword) {
+    }
+
+    public boolean isChangeUserPassword(Customer customer, String oldPassword, String newPassword) {
         int strength = 10;
         BCryptPasswordEncoder bCryptPasswordEncoder =
                 new BCryptPasswordEncoder(strength, new SecureRandom());

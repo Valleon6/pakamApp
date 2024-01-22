@@ -16,6 +16,7 @@ public interface AuthService {
     ResponseMessage resetPassword(HttpServletRequest request, ResetDTO resetDTO) throws Exception;
 
     ResponseMessage activateUser(HttpServletResponse response, Locale locale, Model model, String token) throws Exception;
+
     ResponseMessage savePassword(PasswordDTO passwordDto) throws Exception;
 
 }

@@ -3,7 +3,6 @@ package com.valleon.pakamapp.modules.customer.service;
 import com.valleon.pakamapp.exception.ApiRequestException;
 import com.valleon.pakamapp.exception.Codes;
 import com.valleon.pakamapp.exception.Message;
-import com.valleon.pakamapp.modules.assessment.repository.AssessmentRepository;
 import com.valleon.pakamapp.modules.customer.entity.Customer;
 import com.valleon.pakamapp.modules.customer.repository.CustomerRepository;
 import com.valleon.pakamapp.modules.payload.CustomerDTO;
@@ -17,16 +16,13 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
-
     private final CustomerRepository customerRepository;
-
-    private final AssessmentRepository assessmentRepository;
 
     public ResponseMessage getCustomer(String customerCode) {
         LocalDateTime time = LocalDateTime.now();
         Customer customer = customerRepository.findByCustomerCode(customerCode)
                 .orElseThrow(() -> new ApiRequestException(Message.CUSTOMER_NOT_FOUND));
-  return new ResponseMessage<>(time, Codes.SUCCESS, Message.SUCCESS_GET, customer);
+        return new ResponseMessage<>(time, Codes.SUCCESS, Message.SUCCESS_GET, customer);
     }
 
 

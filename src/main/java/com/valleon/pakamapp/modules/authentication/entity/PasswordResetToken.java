@@ -35,6 +35,7 @@ public class PasswordResetToken {
 
     public PasswordResetToken(String token, Customer customer) {
     }
+
     @Column(name = "date_created")
     private LocalDateTime dateCreated = LocalDateTime.now();
 }

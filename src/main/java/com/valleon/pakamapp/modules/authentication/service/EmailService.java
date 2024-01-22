@@ -27,19 +27,9 @@ public class EmailService {
         email.setText(body);
         email.setTo(customer.getEmail());
         email.setFrom(env.getProperty("support.email"));
+        mailSender.send(email);
         return email;
     }
-
-//    private SimpleMailMessage constructAdminEmail(String subject, String body,
-//                                                  String adminEmail) {
-//        SimpleMailMessage email = new SimpleMailMessage();
-//        email.setSubject(subject);
-//        email.setText(body);
-//        email.setTo(adminEmail);
-//        email.setFrom(env.getProperty("support.email"));
-//        return email;
-//    }
-
 
     public void sendRegistrationEmail(String to, String name) {
         SimpleMailMessage message = new SimpleMailMessage();

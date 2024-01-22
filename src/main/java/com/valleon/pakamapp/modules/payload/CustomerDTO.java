@@ -3,7 +3,10 @@ package com.valleon.pakamapp.modules.payload;
 import com.valleon.pakamapp.modules.customer.entity.Customer;
 import com.valleon.pakamapp.utils.AppConstants;
 import jakarta.validation.constraints.Pattern;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter

@@ -18,7 +18,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,7 +29,6 @@ import org.springframework.ui.Model;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -48,19 +46,11 @@ class AuthServiceImpl implements AuthService {
 
     private final EmailService emailService;
 
-    private final MessageSource messages;
-//    private final RestTemplate restTemplate;
-
     @Value("${pekam.login.url:}") // Frontend login page url
-    String pekamLoginPageUrl;
+    String pakamLoginPageUrl;
 
     @Value("${frontend.reset.password.url:}") // Frontend reset password page url
     String resetPasswordPageUrl;
-
-//    @Value("${emailService.base.url:}") // utilize a localHOST URL
-//    String emailServiceUrl;
-
-//    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm a dd MMMM yyyy");
 
     @Override
     public ResponseMessage login(LoginDTO loginDTO) throws Exception {
@@ -73,7 +63,6 @@ class AuthServiceImpl implements AuthService {
         } catch (BadCredentialsException e) {
             throw new Exception(Message.LOGIN_ERROR, e);
         }
-
         final CustomUserDetails user = customUserDetailsService.loadUserByUsername(loginDTO.getEmail());
         Customer customer = customerRepository.findByEmail(loginDTO.getEmail())
                 .orElseThrow(() -> new ApiRequestException(Message.CUSTOMER_NOT_FOUND));
@@ -124,15 +113,16 @@ class AuthServiceImpl implements AuthService {
             String url = request.getRequestURL() + apiPath + token;
             System.out.println(url);
             try {
-                //Use an email service to send the activation url to the registered email
-                emailService.constructValidationEmail(request.getRequestURL().toString() , apiPath, token, customer);
+                //Using an email service to send the activation url to the registered email
+                emailService.constructValidationEmail(request.getRequestURL().toString(), apiPath, token, customer);
             } catch (Exception e) {
                 throw new Exception(Message.EMAIL_SEND_ERROR + ": " + e);
             }
-//            //Manually activate customer for now
+//            Manually activate customer for testing purposes'
 //            customer.setIsActive(true);
 //            customerRepository.save(customer);
 
+            //Attaching token to response payload for testing purposes
             return new ResponseMessage(time, Codes.SUCCESS, Message.SUCCESS_ACCOUNT_CREATION + ". TOKEN: " + token, customer);
         } catch (Exception e) {
             return new ResponseMessage(time, Codes.SERVER_ERROR, Message.ERROR_ACCOUNT_CREATION, e.getMessage());
@@ -148,15 +138,14 @@ class AuthServiceImpl implements AuthService {
                     .orElseThrow(() -> new ApiRequestException(Message.CUSTOMER_NOT_FOUND));
             String token = UUID.randomUUID().toString();
             customUserDetailsService.createPasswordResetTokenForUser(customer, token);
-           String url = resetPasswordPageUrl + "?token=";
-//            String apiPath = "/user/reset-password/change-password?token=";
-//            String url = request.getRequestURL() + apiPath + token;
+            String url = resetPasswordPageUrl + "?token=";
             try {
                 emailService.constructResetTokenEmail(url, token, customer);
             } catch (Exception e) {
                 throw new Exception(Message.EMAIL_SEND_ERROR + ": " + e);
             }
-            return new ResponseMessage(time, Codes.SUCCESS, Message.SUCCESS_PASSWORD_RESET_EMAIL+ ". RESET LINK: "+ url+token, null);
+            //Attaching token to response payload for testing purposes
+            return new ResponseMessage(time, Codes.SUCCESS, Message.SUCCESS_PASSWORD_RESET_EMAIL + ". RESET LINK: " + url + token, null);
         } catch (Exception e) {
             return new ResponseMessage(time, Codes.SERVER_ERROR, Message.ERROR_PASSWORD_RESET, e.getMessage());
         }
@@ -167,7 +156,6 @@ class AuthServiceImpl implements AuthService {
         LocalDateTime time = LocalDateTime.now();
         String result = customUserDetailsService.validateEmailValidationToken(token);
         if (result != null) {
-            String message = messages.getMessage("auth.message." + result, null, locale);
             return new ResponseMessage(time, Codes.TOKEN_NOT_FOUND, Message.INVALID_TOKEN, null);
         } else {
             Customer customer = customerRepository.getUserByEmailValidationToken(token)
@@ -176,14 +164,13 @@ class AuthServiceImpl implements AuthService {
                 return new ResponseMessage(time, Codes.TOKEN_NOT_FOUND, Message.ALREADY_ACTIVATE_CUSTOMER, null);
             customer.setIsActive(true);
             customerRepository.save(customer);
-
             try {
                 emailService.sendRegistrationEmail(customer.getEmail(), customer.getFirstName());
             } catch (Exception e) {
                 throw new Exception(Message.EMAIL_SEND_ERROR + ": " + e);
             }
-
-//            response.sendRedirect(pekamLoginPageUrl);
+            //The below is meant to redirect the customer to the Login page.
+//            response.sendRedirect(pakamLoginPageUrl);
             return new ResponseMessage(time, Codes.SUCCESS, Message.ACTIVATE_CUSTOMER, customer);
         }
     }
@@ -191,7 +178,6 @@ class AuthServiceImpl implements AuthService {
     @Override
     public ResponseMessage savePassword(PasswordDTO passwordDto) throws Exception {
         LocalDateTime time = LocalDateTime.now();
-//        String date = time.format(formatter);
         String result = customUserDetailsService.validatePasswordResetToken(passwordDto.getToken());
         if (result != null) {
             return new ResponseMessage(time, Codes.TOKEN_NOT_FOUND, result, null);
@@ -199,17 +185,6 @@ class AuthServiceImpl implements AuthService {
         Customer customer = customerRepository.getUserByPasswordResetToken(passwordDto.getToken())
                 .orElseThrow(() -> new ApiRequestException(Message.CUSTOMER_NOT_FOUND));
         if (customUserDetailsService.isChangeUserPassword(customer, customer.getPassword(), passwordDto.getNewPassword())) {
-//            try {
-//                String apiPath = "/customer/activate?token=";
-//                String url = request.getRequestURL() + apiPath + token;
-//
-//                emailService.constructResetTokenEmail(apiPath, passwordDto.getToken(), customer);
-//                String apiUrl = storefrontBaseUrl + "/send-password-reset-success-email?email=" + customer.getEmail() + "&firstname=" + customer.getFirst_name() + "&date=" + date;
-//                String res = restTemplate.getForObject(apiUrl, String.class);
-//                System.out.println(res);
-//            } catch (Exception e) {
-//                throw new Exception(Message.EMAIL_SEND_ERROR + ": " + e);
-//            }
             return new ResponseMessage(time, Codes.SUCCESS, Message.SUCCESS_PASSWORD_RESET, null);
         } else {
             return new ResponseMessage(time, Codes.SERVER_ERROR, Message.ERROR_PASSWORD_RESET, null);

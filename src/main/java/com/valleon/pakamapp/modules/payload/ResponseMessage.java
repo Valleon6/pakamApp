@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class ResponseMessage<T>   {
+public class ResponseMessage<T> {
     private LocalDateTime timeStamp = LocalDateTime.now();
     private int statusCode;
     private String details;
