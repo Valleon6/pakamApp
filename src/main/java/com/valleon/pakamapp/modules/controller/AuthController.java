@@ -1,10 +1,7 @@
 package com.valleon.pakamapp.modules.controller;
 
 import com.valleon.pakamapp.modules.authentication.service.AuthService;
-import com.valleon.pakamapp.modules.payload.LoginDTO;
-import com.valleon.pakamapp.modules.payload.RegisterDTO;
-import com.valleon.pakamapp.modules.payload.ResetDTO;
-import com.valleon.pakamapp.modules.payload.ResponseMessage;
+import com.valleon.pakamapp.modules.payload.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -40,6 +37,11 @@ public class AuthController {
     @GetMapping("/register/customer/activate")
     public ResponseMessage activateCustomer(HttpServletResponse response, Locale locale, Model model, @RequestParam("token") String token) throws Exception {
         return authService.activateUser(response, locale, model, token);
+    }
+
+    @PostMapping("/user/reset-password/change-password")
+    public ResponseMessage changePassword(@Valid @RequestBody PasswordDTO passwordDTO) throws Exception {
+        return authService.savePassword(passwordDTO);
     }
 
 }

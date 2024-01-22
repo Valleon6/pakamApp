@@ -1,9 +1,6 @@
 package com.valleon.pakamapp.modules.authentication.service;
 
-import com.valleon.pakamapp.modules.payload.LoginDTO;
-import com.valleon.pakamapp.modules.payload.RegisterDTO;
-import com.valleon.pakamapp.modules.payload.ResetDTO;
-import com.valleon.pakamapp.modules.payload.ResponseMessage;
+import com.valleon.pakamapp.modules.payload.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.ui.Model;
@@ -19,6 +16,6 @@ public interface AuthService {
     ResponseMessage resetPassword(HttpServletRequest request, ResetDTO resetDTO) throws Exception;
 
     ResponseMessage activateUser(HttpServletResponse response, Locale locale, Model model, String token) throws Exception;
-
+    ResponseMessage savePassword(PasswordDTO passwordDto) throws Exception;
 
 }
